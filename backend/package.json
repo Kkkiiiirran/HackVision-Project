@@ -1,0 +1,52 @@
+{
+  "name": "learning-platform-api",
+  "version": "1.0.0",
+  "description": "Production-ready REST API for learning platform with educators and students",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:undo": "sequelize-cli db:migrate:undo",
+    "seed": "sequelize-cli db:seed:all"
+  },
+  "keywords": [
+    "express",
+    "rest-api",
+    "learning-platform",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.1498.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "razorpay": "^2.9.2",
+    "redis": "^4.7.1",
+    "sequelize": "^6.35.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "sequelize-cli": "^6.6.2",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
