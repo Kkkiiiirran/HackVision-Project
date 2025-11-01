@@ -1,0 +1,29 @@
+{
+    "topics": "React basics, JSX, useState, event handling, conditional rendering, array manipulation, state management, UI/UX for interactive applications",
+    "problems": [
+        {
+            "problem_title": "Setup & Display Initial Question",
+            "problem_description": "In the previous steps we set up your React environment. Now next step you have to initialize a new React project and display a single hardcoded quiz question with its multiple-choice options. Focus on creating the basic component structure for your quiz and rendering the question text and answer buttons using props or direct state."
+        },
+        {
+            "problem_title": "Implement Answer Selection Logic",
+            "problem_description": "In the previous steps we displayed a question and its options. Now next step you have to add functionality to capture a user's selected answer. Implement event handlers for the answer options to store the chosen answer in your component's state when an option is clicked."
+        },
+        {
+            "problem_title": "Validate Answer & Show Feedback",
+            "problem_description": "In the previous steps we captured the user's selected answer. Now next step you have to add logic to check if the selected answer is correct or incorrect. After an answer is selected, display immediate visual feedback to the user (e.g., 'Correct!' or 'Incorrect, the answer was X') without advancing to the next question yet."
+        },
+        {
+            "problem_title": "Track Score & Navigate Questions",
+            "problem_description": "In the previous steps we validated the answer and showed feedback. Now next step you have to implement a score tracking mechanism to update the score if the answer is correct. Additionally, add a 'Next Question' button that, when clicked, advances the quiz to the next question in your predefined list."
+        },
+        {
+            "problem_title": "End Game & Display Final Results",
+            "problem_description": "In the previous steps we navigated through questions and tracked the score. Now next step you have to implement the end-game scenario. When all questions have been answered, hide the question interface and display the user's final score. Include a 'Play Again' button to reset the quiz and allow the user to start from the beginning."
+        },
+        {
+            "problem_title": "Refine UI & Conditional Rendering for States",
+            "problem_description": "In the previous steps we completed the core quiz functionality including end-game logic. Now next step you have to enhance the user interface by applying conditional rendering. For example, change the background color of the selected answer button to green for correct and red for incorrect after submission, and ensure the 'Next Question' button only appears after an answer has been chosen and feedback is shown."
+        }
+    ]
+}

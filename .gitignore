@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+
+# Vite build output
+dist/
+
+# Environment files
+.env
+*.env
+
+# Python virtual environments
+.venv/
+**/.venv/
+venv/
+**/venv/
+
+# Python cache files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Optional OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
