@@ -5,7 +5,7 @@ const paymentController = require('../controllers/payment.controller');
 const authenticate = require('../middleware/authenticate');
 const requireRole = require('../middleware/requireRole');
 
-// Subscribe to module (create order)
+
 router.post(
   '/modules/:moduleId/subscribe',
   authenticate,
@@ -13,7 +13,7 @@ router.post(
   paymentController.createOrder
 );
 
-// Get students in a module (educator only)
+
 router.get(
   '/modules/:moduleId/students',
   authenticate,
@@ -21,7 +21,7 @@ router.get(
   enrollmentController.getModuleStudents
 );
 
-// Cancel enrollment
+
 router.post(
   '/:enrollmentId/cancel',
   authenticate,

@@ -6,7 +6,7 @@ const redisClient = require('../config/redis');
 
 class AuthService {
   async signupEducator(data) {
-    const { name, email, password, organization, website } = data;
+    const { name, email, password } = data;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -24,16 +24,17 @@ class AuthService {
 
     await EducatorProfile.create({
       user_id: user.id,
-      organization,
-      website
     });
 
     const tokens = await this.generateTokens(user);
 
+    // Return consistent structure
     return {
+      id: user.id,
       user_id: user.id,
       email: user.email,
       role: user.role,
+      name: user.name,
       ...tokens
     };
   }
@@ -61,10 +62,13 @@ class AuthService {
 
     const tokens = await this.generateTokens(user);
 
+    // Return consistent structure
     return {
+      id: user.id,
       user_id: user.id,
       email: user.email,
       role: user.role,
+      name: user.name,
       ...tokens
     };
   }

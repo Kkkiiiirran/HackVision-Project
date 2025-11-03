@@ -4,8 +4,8 @@ const educatorSignupSchema = Joi.object({
   name: Joi.string().required().min(2).max(100),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
-  organization: Joi.string().max(200).optional(),
-  website: Joi.string().uri().optional()
+  // organization: Joi.string().max(200).optional(),
+  // website: Joi.string().uri().optional()
 });
 
 const studentSignupSchema = Joi.object({

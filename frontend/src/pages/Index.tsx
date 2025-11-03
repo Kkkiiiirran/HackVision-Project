@@ -6,14 +6,14 @@ import StudentDashboard from "./StudentDashboard";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const { profile, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !profile) {
+    if (!loading && !user) {
       navigate("/auth");
     }
-  }, [profile, loading, navigate]);
+  }, [user, loading, navigate]);
 
   if (loading) {
     return (
@@ -23,11 +23,14 @@ const Index = () => {
     );
   }
 
-  if (!profile) {
+  if (!user) {
     return null;
   }
 
-  return profile.role === "educator" ? <EducatorDashboard /> : <StudentDashboard />;
+  // Use user.role if profile is not loaded yet
+  const role = profile?.role || user.role;
+  
+  return role === "educator" ? <EducatorDashboard /> : <StudentDashboard />;
 };
 
 export default Index;

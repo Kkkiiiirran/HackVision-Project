@@ -1,4 +1,8 @@
 const moduleService = require('../services/module.service');
+const problemService = require('../services/problem.service');
+const path = require('path');
+const { spawn } = require('child_process');
+const fs = require('fs');
 
 class ModuleController {
   async createModule(req, res, next) {
@@ -54,6 +58,59 @@ class ModuleController {
       next(error);
     }
   }
+
+
+async generateModule(req, res, next) {
+  try {
+    const educatorId = req.user.userId;
+    const { description } = req.body || {};
+
+    // Call FastAPI to generate module + problems
+    const resp = await fetch("http://127.0.0.1:8000/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description }),
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(`Agents FastAPI error: ${text}`);
+    }
+
+    const { module: quizModule } = await resp.json();
+
+    // Create module in Node.js DB
+    const createdModule = await moduleService.createModule(educatorId, {
+      title: quizModule.title || "AI Generated Module",
+      description: quizModule.description || "",
+      price_cents: 0,
+      currency: "INR",
+      tags: quizModule.tags || [],
+      topics: quizModule.topics || [],
+    });
+
+    // Create problems
+    const createdProblems = [];
+    for (const p of quizModule.problems || []) {
+      const problem = await problemService.createProblem(createdModule.id, educatorId, {
+        title: p.problem_title || "AI Problem",
+        description: p.problem_description || null,
+        difficulty: p.difficulty || "medium",
+        image_url: p.image_url || null,
+        sample_input: p.sample_input || null,
+        sample_output: p.sample_output || null,
+        topics: p.topics || [],
+      });
+      createdProblems.push(problem);
+    }
+
+    res.status(201).json({ module: createdModule, problems: createdProblems });
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 }
 
 module.exports = new ModuleController();

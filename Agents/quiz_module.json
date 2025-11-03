@@ -1,29 +1,50 @@
 {
-    "topics": "React basics, JSX, useState, event handling, conditional rendering, array manipulation, state management, UI/UX for interactive applications",
+    "topics": "Node.js, Express, React (or basic HTML/JS), MongoDB (or any database), API design, URL redirection, Frontend-Backend communication",
     "problems": [
         {
-            "problem_title": "Setup & Display Initial Question",
-            "problem_description": "In the previous steps we set up your React environment. Now next step you have to initialize a new React project and display a single hardcoded quiz question with its multiple-choice options. Focus on creating the basic component structure for your quiz and rendering the question text and answer buttons using props or direct state."
+            "problem_title": "Design the URL Shortener Frontend",
+            "problem_description": "Your task is to create the foundational HTML structure for a URL shortening application. Imagine a user wants to shorten a very long web address. You need to provide them with a simple and intuitive interface to do so. This involves three main components:\n\n1.  An **input field**: This is where the user will paste their original, long URL. It should be clear what this field is for.\n2.  A **button**: Once the user has entered their URL, they will click this button to trigger the shortening process. The button should have a clear label indicating its purpose (e.g., \"Shorten URL\", \"Generate Link\").\n3.  A **display area**: After the URL is processed (which we won't implement in this problem, just the placeholder), the generated short URL will appear here. This area should initially be empty or contain a placeholder message, ready to display the result.\n\nFocus on creating clean, semantic HTML. You don't need to add any CSS styling or JavaScript functionality yet; the goal is solely the static UI elements. Consider accessibility and usability for the target audience.",
+            "difficulty": "Easy",
+            "topics": "Web Dev, HTML, Frontend Development, UI/UX",
+            "sample_input": null,
+            "sample_output": null,
+            "image_url": null
         },
         {
-            "problem_title": "Implement Answer Selection Logic",
-            "problem_description": "In the previous steps we displayed a question and its options. Now next step you have to add functionality to capture a user's selected answer. Implement event handlers for the answer options to store the chosen answer in your component's state when an option is clicked."
+            "problem_title": "Initialize Backend Server and API Route",
+            "problem_description": "Welcome to the backend development phase! You've already done a great job designing the frontend. Now, it's time to build the foundation for our server-side logic. Your task is to set up a basic backend server using a popular framework like Express.js (for Node.js), Flask (for Python), or Django (for Python). The goal is to create an API endpoint that can receive data from your frontend.\n\nSpecifically, you need to:\n1.  **Set up a basic server**: Initialize an application using your chosen framework (e.g., an Express app, a Flask app).\n2.  **Create an API Route**: Define a new API route, for example, `/api/shorten`. This route should be configured to handle `POST` requests.\n3.  **Accept Data**: When a `POST` request is sent to `/api/shorten`, it will contain a JSON body with the `longUrl` that needs to be shortened.\n4.  **Return a Placeholder Response**: For this initial step, the route doesn't need to perform any actual URL shortening. Instead, it should simply return a placeholder JSON response. This response will acknowledge that the request was received and processed, and could contain a message like \"Received URL for shortening\" and maybe echo back the received URL. This helps you confirm that your backend is up and running correctly and communicating with your frontend.\n\n**Input Type**: A JSON object sent via a POST request body.\n**Output Type**: A JSON object as a response from the server.",
+            "difficulty": "Easy",
+            "topics": "Web Development, Backend Development, API Development, Node.js, Express.js, Server-side Programming, REST API",
+            "sample_input": "POST /api/shorten\nContent-Type: application/json\n\n{\n  \"longUrl\": \"https://www.example.com/very/long/url/to/be/shortened\"\n}",
+            "sample_output": "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n  \"message\": \"Received URL for shortening\",\n  \"receivedUrl\": \"https://www.example.com/very/long/url/to/be/shortened\"\n}",
+            "image_url": null
         },
         {
-            "problem_title": "Validate Answer & Show Feedback",
-            "problem_description": "In the previous steps we captured the user's selected answer. Now next step you have to add logic to check if the selected answer is correct or incorrect. After an answer is selected, display immediate visual feedback to the user (e.g., 'Correct!' or 'Incorrect, the answer was X') without advancing to the next question yet."
+            "problem_title": "Implement Short URL Generation and Data Storage",
+            "problem_description": "Imagine you are building a service like Bitly or TinyURL. Your task is to enhance an existing backend API route, specifically `/api/shorten`, to convert long, cumbersome URLs into much shorter, more manageable ones. When a user submits a long URL, your service should generate a unique, short alphanumeric code (e.g., 'abcDE12'). This code will then be associated with the original long URL. To ensure that these mappings are permanent and accessible, you must integrate a database (such as MongoDB, PostgreSQL, or SQLite) to store both the generated short code and the original long URL. Each short code must be unique and lead back to its correct long URL. Your solution should handle potential collisions if a generated short code already exists.\n\nInput: The API will receive a POST request to `/api/shorten` with a JSON body containing the `longUrl`.\nOutput: The API should respond with a JSON object containing the `shortUrl` and the `longUrl`.\n\nConstraints:\n- The generated short code must be alphanumeric (a-z, A-Z, 0-9).\n- The short code should be between 5 and 8 characters long.\n- Each short code must be unique for a given long URL.\n- If the same long URL is submitted multiple times, it should return the previously generated short URL if one exists.\n- Implement a mechanism to handle potential collisions when generating short codes (e.g., retry generation if a code already exists).",
+            "difficulty": "Medium",
+            "topics": "API Development, Backend Development, Database Management, Unique ID Generation, Web Services, URL Shortening",
+            "sample_input": "POST /api/shorten\nContent-Type: application/json\n\n{\n  \"longUrl\": \"https://www.example.com/very/long/url/that/needs/to/be/shortened/for/easy/sharing\"\n}",
+            "sample_output": "HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n  \"longUrl\": \"https://www.example.com/very/long/url/that/needs/to/be/shortened/for/easy/sharing\",\n  \"shortUrl\": \"http://yourdomain.com/abcDE12\"\n}",
+            "image_url": null
         },
         {
-            "problem_title": "Track Score & Navigate Questions",
-            "problem_description": "In the previous steps we validated the answer and showed feedback. Now next step you have to implement a score tracking mechanism to update the score if the answer is correct. Additionally, add a 'Next Question' button that, when clicked, advances the quiz to the next question in your predefined list."
+            "problem_title": "Connect Frontend to Backend Shortening API",
+            "problem_description": "You've successfully built a backend API that can shorten long URLs. Now, your task is to complete the frontend part of this URL shortener application, making it interactive for users. Your objective is to modify the existing frontend's JavaScript to interact with your backend's `/api/shorten` endpoint.\n\n**Here's what you need to do:**\n1.  **Capture User Input:** Identify the HTML input field where users will type their long URL.\n2.  **Send Asynchronous Request:** When a user triggers an action (e.g., clicks a 'Shorten' button), your JavaScript should send the long URL from the input field to your backend's `/api/shorten` endpoint. This must be an asynchronous HTTP POST request. You can use modern browser APIs like `fetch` or a library like `axios`.\n3.  **Handle Backend Response:** Your backend is expected to return the short URL (e.g., in a JSON format like `{\"shortUrl\": \"http://yourdomain.com/abcd\"}`).\n4.  **Display Short URL:** Upon receiving the short URL from the backend, display it clearly and prominently in a designated output area on the frontend. Consider adding basic error handling for network issues or invalid responses.\n\n**Input:** The long URL will be provided by the user via an HTML input field on the frontend.\n**Output:** The generated short URL (received from the backend) will be displayed on the frontend.",
+            "difficulty": "Medium",
+            "topics": "Web Development, Frontend Development, API Integration, JavaScript, Asynchronous Programming, HTTP Requests, DOM Manipulation",
+            "sample_input": null,
+            "sample_output": null,
+            "image_url": null
         },
         {
-            "problem_title": "End Game & Display Final Results",
-            "problem_description": "In the previous steps we navigated through questions and tracked the score. Now next step you have to implement the end-game scenario. When all questions have been answered, hide the question interface and display the user's final score. Include a 'Play Again' button to reset the quiz and allow the user to start from the beginning."
-        },
-        {
-            "problem_title": "Refine UI & Conditional Rendering for States",
-            "problem_description": "In the previous steps we completed the core quiz functionality including end-game logic. Now next step you have to enhance the user interface by applying conditional rendering. For example, change the background color of the selected answer button to green for correct and red for incorrect after submission, and ensure the 'Next Question' button only appears after an answer has been chosen and feedback is shown."
+            "problem_title": "Build a Short URL Redirection Service",
+            "problem_description": "Imagine you've built a URL shortening service, just like TinyURL or Bitly. People can input a long URL, and your service gives them a much shorter, memorable URL. Now, the crucial part: when someone types or clicks on one of these short URLs, your service needs to send them to the original, long URL.\n\nYour task is to implement the backend logic for this redirection. You need to create a new API endpoint that can handle these short URLs. For example, if your short URL is `http://yourdomain.com/shortCode123`, your new endpoint should be able to process `/shortCode123`.\n\nWhen a user's browser requests a short URL (e.g., `GET /shortCodeXYZ`), your server should:\n1.  **Extract the Short Code**: Identify the unique `shortCode` (like `shortCodeXYZ`) from the requested URL path.\n2.  **Query the Database**: Use this `shortCode` to look up the corresponding original long URL in your database. You can assume you have a table (or collection) storing pairs of `shortCode` and `longURL`.\n3.  **Issue an HTTP Redirect**: If a matching long URL is found, your server must send an HTTP 302 Found (or 301 Moved Permanently) status code along with a `Location` header containing the original long URL. This tells the user's browser to automatically navigate to the long URL.\n4.  **Handle Not Found**: If the `shortCode` does not exist in your database, the server should respond with an appropriate HTTP error, such as 404 Not Found.\n\nThis problem helps you understand how web servers handle dynamic routing, interact with databases, and use HTTP redirection to create seamless user experiences. The input will be an HTTP GET request to a specific path containing the short code, and the output will be an HTTP redirect response or an error.",
+            "difficulty": "Medium",
+            "topics": "Web Development, API Development, Database Interaction, HTTP Protocols, Routing, Backend Development",
+            "sample_input": "HTTP GET request to /xyz123 (where 'xyz123' is a short code stored in the database)",
+            "sample_output": "HTTP/1.1 302 Found\nLocation: https://www.example.com/this-is-a-very-long-original-url-that-was-shortened",
+            "image_url": null
         }
     ]
 }

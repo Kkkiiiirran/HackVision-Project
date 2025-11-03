@@ -25,15 +25,18 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: ["http://localhost:5173", "http://localhost:3000"],
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting - more lenient in development
+const isDevelopment = process.env.NODE_ENV === 'development';
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-  message: 'Too many requests from this IP, please try again later.'
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || (isDevelopment ? 1 * 60 * 1000 : 15 * 60 * 1000), // 1 min in dev, 15 min in prod
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || (isDevelopment ? 1000 : 100), // 1000 in dev, 100 in prod
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use('/api/', limiter);
 
@@ -64,6 +67,32 @@ app.use(`/api/${API_VERSION}/enrollments`, enrollmentRoutes);
 // app.use(`/api/${API_VERSION}/payments`, paymentRoutes);
 app.use(`/api/${API_VERSION}/uploads`, uploadRoutes);
 app.use(`/api/${API_VERSION}/admin`, adminRoutes);
+
+// Dev-only: expose registered route list for debugging
+if (process.env.NODE_ENV !== 'production') {
+  app.get(`/api/${API_VERSION}/_debug/routes`, (req, res) => {
+    try {
+      const routes = [];
+      const stack = app._router && app._router.stack ? app._router.stack : [];
+      stack.forEach((layer) => {
+        if (layer.route && layer.route.path) {
+          const methods = Object.keys(layer.route.methods).join(',').toUpperCase();
+          routes.push({ path: layer.route.path, methods });
+        } else if (layer.name === 'router' && layer.handle && layer.handle.stack) {
+          layer.handle.stack.forEach((handler) => {
+            if (handler.route) {
+              const methods = Object.keys(handler.route.methods).join(',').toUpperCase();
+              routes.push({ path: handler.route.path, methods });
+            }
+          });
+        }
+      });
+      res.status(200).json({ routes });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to list routes', details: err.message });
+    }
+  });
+}
 
 // 404 handler
 app.use((req, res) => {

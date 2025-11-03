@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { User, Mail, Calendar } from "lucide-react";
 
 export default function Profile() {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
 
-  if (!profile) {
+  if (!profile && !user) {
     return (
       <div className="min-h-screen bg-gradient-subtle">
         <Header />
@@ -19,11 +19,20 @@ export default function Profile() {
     );
   }
 
-  const roleColor = profile.role === "educator" ? "bg-secondary" : "bg-primary";
-  const joinDate = new Date(profile.created_at).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  // Handle both possible field names from backend
+  const displayName = profile?.name || (user as any)?.name || "User";
+  const displayEmail = (profile as any)?.email || user?.email || "No email";
+  const displayRole = profile?.role || user?.role || "user";
+  // Backend returns created_at (snake_case) not createdAt (camelCase)
+  const createdAt = (profile as any)?.created_at || (profile as any)?.createdAt || (user as any)?.created_at || (user as any)?.createdAt;
+  
+  const roleColor = displayRole === "educator" ? "bg-secondary" : "bg-primary";
+  const joinDate = createdAt 
+    ? new Date(createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })
+    : "Unknown";
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -34,14 +43,14 @@ export default function Profile() {
             <div className="flex items-start gap-6">
               <Avatar className="w-24 h-24">
                 <AvatarFallback className={`${roleColor} text-primary-foreground text-3xl`}>
-                  {profile.full_name?.[0]?.toUpperCase() || "U"}
+                  {displayName[0]?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <CardTitle className="text-3xl">{profile.full_name || "User"}</CardTitle>
+                  <CardTitle className="text-3xl">{displayName}</CardTitle>
                   <Badge variant="secondary" className="capitalize">
-                    {profile.role}
+                    {displayRole}
                   </Badge>
                 </div>
                 <CardDescription>Member since {joinDate}</CardDescription>
@@ -54,7 +63,7 @@ export default function Profile() {
                 <Mail className="w-5 h-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">{profile.email}</p>
+                  <p className="font-medium">{displayEmail}</p>
                 </div>
               </div>
 
@@ -62,7 +71,7 @@ export default function Profile() {
                 <User className="w-5 h-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Role</p>
-                  <p className="font-medium capitalize">{profile.role}</p>
+                  <p className="font-medium capitalize">{displayRole}</p>
                 </div>
               </div>
 

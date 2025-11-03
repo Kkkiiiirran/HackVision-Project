@@ -19,8 +19,12 @@ const startServer = async () => {
     }
 
     // Test Redis connection
-    await redisClient.ping();
-    console.log('✓ Redis connection established successfully');
+    try {
+      await redisClient.ping();
+      console.log('✓ Redis connection established successfully');
+    } catch (error) {
+      console.log('⚠️ Redis connection not available, using mock client');
+    }
 
     // Start server
     app.listen(PORT, () => {

@@ -7,7 +7,7 @@ const Problem = require('./Problem');
 const Enrollment = require('./Enrollment');
 const PaymentRecord = require('./PaymentRecord');
 
-// Define associations
+
 User.hasOne(EducatorProfile, { foreignKey: 'user_id', as: 'educatorProfile' });
 EducatorProfile.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 

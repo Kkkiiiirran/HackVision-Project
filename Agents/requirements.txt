@@ -1,0 +1,8 @@
+python-dotenv
+google-genai
+# Web API for running agents
+fastapi
+uvicorn[standard]
+# If your agents use an ADK package, add it here (example):
+# google-adk
+# Add any other Python packages your agents import (e.g., aiohttp, requests)

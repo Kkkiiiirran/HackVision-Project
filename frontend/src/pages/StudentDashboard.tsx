@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/layout/Header";
 import ModuleCard from "@/components/dashboard/ModuleCard";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { studentService } from "@/lib/api";
 
 interface Module {
   id: string;
@@ -28,42 +28,25 @@ export default function StudentDashboard() {
 
   const fetchSubscribedModules = async () => {
     try {
-      // Get subscribed module IDs
-      const { data: subscriptions, error: subError } = await supabase
-        .from("subscriptions")
-        .select("module_id")
-        .eq("student_id", profile?.id);
-
-      if (subError) throw subError;
-
-      if (!subscriptions || subscriptions.length === 0) {
+      // Get enrolled modules from backend API
+      const response = await studentService.getEnrollments();
+      const enrollments = response.data;
+      
+      if (!enrollments || enrollments.length === 0) {
         setLoading(false);
         return;
       }
-
-      const moduleIds = subscriptions.map((sub) => sub.module_id);
-
-      // Fetch module details
-      const { data: modulesData, error: modError } = await supabase
-        .from("modules")
-        .select("*")
-        .in("id", moduleIds)
-        .order("created_at", { ascending: false });
-
-      if (modError) throw modError;
-
-      // Fetch problem counts for each module
-      const modulesWithCounts = await Promise.all(
-        (modulesData || []).map(async (module) => {
-          const { count } = await supabase
-            .from("problems")
-            .select("*", { count: "exact", head: true })
-            .eq("module_id", module.id);
-
-          return { ...module, problem_count: count || 0 };
-        })
-      );
-
+      
+      // Transform the data to match the expected format
+      const modulesWithCounts = enrollments.map((enrollment: any) => ({
+        id: enrollment.module.id,
+        educator_id: enrollment.module.educator_id,
+        title: enrollment.module.title,
+        description: enrollment.module.description,
+        created_at: enrollment.module.created_at,
+        problem_count: enrollment.module.problem_count || 0
+      }));
+      
       setModules(modulesWithCounts);
     } catch (error: any) {
       toast.error("Failed to load modules");

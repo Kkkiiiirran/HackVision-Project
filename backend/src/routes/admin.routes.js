@@ -4,10 +4,9 @@ const authenticate = require('../middleware/authenticate');
 const requireRole = require('../middleware/requireRole');
 const { User, PaymentRecord, Enrollment, Module } = require('../models');
 
-// Admin middleware
+
 const adminOnly = [authenticate, requireRole('admin')];
 
-// Get all users
 router.get('/users', ...adminOnly, async (req, res, next) => {
   try {
     const users = await User.findAll({
@@ -20,7 +19,7 @@ router.get('/users', ...adminOnly, async (req, res, next) => {
   }
 });
 
-// Get all payments
+
 router.get('/payments', ...adminOnly, async (req, res, next) => {
   try {
     const payments = await PaymentRecord.findAll({
@@ -33,7 +32,7 @@ router.get('/payments', ...adminOnly, async (req, res, next) => {
   }
 });
 
-// Force enroll a student
+
 router.post('/modules/:moduleId/force-enroll', ...adminOnly, async (req, res, next) => {
   try {
     const { student_id } = req.body;

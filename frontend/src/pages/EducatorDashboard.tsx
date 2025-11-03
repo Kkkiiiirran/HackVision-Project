@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/layout/Header";
+import { Header } from "@/components/layout/Header";
 import ModuleCard from "@/components/dashboard/ModuleCard";
 import { Button } from "@/components/ui/button";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { educatorService, moduleService } from "@/lib/api";
 
 interface Module {
   id: string;
@@ -18,6 +19,7 @@ interface Module {
 
 export default function EducatorDashboard() {
   const { profile } = useAuth();
+  const navigate = useNavigate();
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,26 +31,28 @@ export default function EducatorDashboard() {
 
   const fetchModules = async () => {
     try {
-      const { data: modulesData, error } = await supabase
-        .from("modules")
-        .select("*")
-        .eq("educator_id", profile?.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      // Fetch problem counts for each module
-      const modulesWithCounts = await Promise.all(
-        (modulesData || []).map(async (module) => {
-          const { count } = await supabase
-            .from("problems")
-            .select("*", { count: "exact", head: true })
-            .eq("module_id", module.id);
-
-          return { ...module, problem_count: count || 0 };
-        })
-      );
-
+      if (!profile) return;
+      
+      const educatorId = (profile as any)?.user_id || (profile as any)?.id || (profile as any)?.userId;
+      if (!educatorId) {
+        toast.error("Unable to identify educator ID");
+        setLoading(false);
+        return;
+      }
+      
+      const response = await educatorService.getModules(educatorId);
+      const modulesData = response.data;
+      
+      // Transform the data to match the expected format
+      const modulesWithCounts = modulesData.map((module: any) => ({
+        id: module.id,
+        educator_id: module.educator_id,
+        title: module.title,
+        description: module.description,
+        created_at: module.created_at,
+        problem_count: module.problem_count || 0
+      }));
+      
       setModules(modulesWithCounts);
     } catch (error: any) {
       toast.error("Failed to load modules");
@@ -58,25 +62,13 @@ export default function EducatorDashboard() {
     }
   };
 
-  const createModule = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("modules")
-        .insert({
-          educator_id: profile?.id,
-          title: "New Module",
-          description: "Click to edit this module",
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      toast.success("Module created!");
-      fetchModules();
-    } catch (error: any) {
-      toast.error("Failed to create module");
-      console.error(error);
+  const createModule = () => {
+    // Navigate to create module page instead of creating directly
+    const educatorId = (profile as any)?.user_id || (profile as any)?.id || (profile as any)?.userId;
+    if (educatorId) {
+      navigate(`/educator/${educatorId}/module/new`);
+    } else {
+      toast.error("Unable to identify educator ID");
     }
   };
 
